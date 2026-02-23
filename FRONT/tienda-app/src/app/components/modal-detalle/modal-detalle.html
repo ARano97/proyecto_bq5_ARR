@@ -1,0 +1,27 @@
+<div class="modal fade show" style="display: block; background-color: rgba(0,0,0,0.5);" 
+     tabindex="-1" (click)="cerrarModal()">
+  <div class="modal-dialog modal-lg" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ producto.nombre }}</h5>
+        <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">
+            <img [src]="'http://localhost:3000/' + producto.imagen" class="img-fluid">
+          </div>
+          <div class="col-md-6">
+            <p><strong>Categoría:</strong> {{ producto.categoria }}</p>
+            <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
+            <p><strong>Precio:</strong> {{ producto.precio | currency:'EUR' }}</p>
+            <p><strong>Stock:</strong> {{ producto.stock }} unidades</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col-md-8 col-lg-6 mx-auto">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Buscar producto..." 
+               [(ngModel)]="terminoBusqueda" (keyup.enter)="buscar()">
+        <button class="btn btn-primary" (click)="buscar()" [disabled]="cargando">
+          Buscar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="cargando" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <div *ngIf="mensajeError" class="alert alert-danger">
+    {{ mensajeError }}
+  </div>
+
+  <div *ngIf="sinResultados && !cargando" class="alert alert-info text-center">
+    No se encontraron productos.
+  </div>
+
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" 
+       *ngIf="!cargando && productos.length > 0">
+    <div class="col" *ngFor="let producto of productos">
+      <app-tarjeta-producto [producto]="producto"></app-tarjeta-producto>
+    </div>
+  </div>
+</div>

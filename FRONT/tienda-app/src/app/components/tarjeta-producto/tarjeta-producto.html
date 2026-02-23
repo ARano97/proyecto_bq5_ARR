@@ -1,0 +1,17 @@
+<div class="card h-100 shadow-sm">
+  <img [src]="'http://localhost:3000/' + producto.imagen" 
+       class="card-img-top" 
+       [alt]="producto.nombre"
+       style="height: 200px; object-fit: cover;">
+  
+  <div class="card-body d-flex flex-column">
+    <h5 class="card-title">{{ producto.nombre }}</h5>
+    <p class="card-text text-muted">{{ producto.categoria }}</p>
+    <p class="card-text fw-bold text-primary">{{ producto.precio | currency:'EUR' }}</p>
+    <button class="btn btn-outline-primary mt-auto" (click)="abrirModal()">
+      Ver detalles
+    </button>
+  </div>
+</div>
+
+<app-modal-detalle *ngIf="mostrarModal" [producto]="producto" (cerrar)="cerrarModal()"></app-modal-detalle>
