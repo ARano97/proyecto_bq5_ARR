@@ -1,15 +1,20 @@
 const oracledb = require("oracledb");
 
-// Configurar para que las filas se devuelvan como objetos
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
 async function getConnection() {
     try {
+        // CREDENCIALES HARCODEADAS PARA PRUEBA
         const conn = await oracledb.getConnection({
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            connectString: process.env.DB_CONNECT_STRING
+            user: "PROYECTOBQ5ARANO",
+            password: "system123",
+            connectString: "localhost:1521/xepdb1"
         });
+
+        // Forzar el contenedor correcto
+        await conn.execute(`ALTER SESSION SET CONTAINER = XEPDB1`);
+        console.log("Conexión exitosa y contenedor cambiado a XEPDB1");
+
         return conn;
     } catch (error) {
         console.error("Error conectando a Oracle:", error.message);

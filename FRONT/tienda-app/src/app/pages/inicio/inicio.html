@@ -1,32 +1,40 @@
+<!-- src/app/pages/inicio/inicio.html -->
 <div class="container mt-4">
   <div class="row mb-4">
     <div class="col-md-8 col-lg-6 mx-auto">
       <div class="input-group">
         <input type="text" class="form-control" placeholder="Buscar producto..." 
                [(ngModel)]="terminoBusqueda" (keyup.enter)="buscar()">
-        <button class="btn btn-primary" (click)="buscar()" [disabled]="cargando">
-          Buscar
+        <button class="btn btn-primary" type="button" (click)="buscar()" [disabled]="cargando">
+          <span *ngIf="!cargando">Buscar</span>
+          <span *ngIf="cargando" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         </button>
       </div>
     </div>
   </div>
 
+  <!-- Mensaje de carga -->
   <div *ngIf="cargando" class="text-center my-5">
-    <div class="spinner-border text-primary" role="status">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
       <span class="visually-hidden">Cargando...</span>
     </div>
+    <p class="mt-2">Cargando productos...</p>
   </div>
 
-  <div *ngIf="mensajeError" class="alert alert-danger">
+  <!-- Mensaje de error -->
+  <div *ngIf="mensajeError && !cargando" class="alert alert-danger alert-dismissible fade show" role="alert">
     {{ mensajeError }}
+    <button type="button" class="btn-close" (click)="mensajeError = ''"></button>
   </div>
 
-  <div *ngIf="sinResultados && !cargando" class="alert alert-info text-center">
+  <!-- Mensaje de sin resultados -->
+  <div *ngIf="sinResultados && !cargando && !mensajeError" class="alert alert-info text-center">
     No se encontraron productos.
   </div>
 
+  <!-- Grid de productos -->
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" 
-       *ngIf="!cargando && productos.length > 0">
+       *ngIf="!cargando && !mensajeError && productos.length > 0">
     <div class="col" *ngFor="let producto of productos">
       <app-tarjeta-producto [producto]="producto"></app-tarjeta-producto>
     </div>
