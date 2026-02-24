@@ -1,35 +1,46 @@
-🌐 Fullstack Web Project (Angular + Node + Oracle)
+Proyecto Bloque V - 🌐 Fullstack Web Project (Angular + Node + Oracle)
 
-Este es un proyecto de desarrollo web que integra un frontend en Angular, un backend en Node.js y una base de datos Oracle.
+Este repositorio contiene el proyecto final del Bloque 5 para el módulo de Desarrollo Web Inicial. Se trata de una aplicación web responsiva con un catálogo funcional conectado a una API propia.
 
-Node.js
+📁 Estructura del Repositorio
 
-Angular
+El proyecto se divide estrictamente en dos carpetas principales:
 
-Oracle Instant Client (necesario para la conexión de Node con la DB)
+/FRONT: Contiene la aplicación cliente desarrollada con Angular.
 
-1. Backend (Node.js)
-2. Frontend (Angular)
+/BACK: Contiene la API de servidor desarrollada con Node.js y Express.
 
-🗄️ Base de Datos
-La gestión de datos se realiza en Oracle DB.
+⚙️ Características del Sistema
+Servidor (Back-end)
 
-Herramienta de visualización: SQLViewer.
+Base de Datos: Gestión de datos mediante Oracle.
 
-Conector: node-oracledb.
+Endpoints: Rutas para obtener el catálogo completo, búsqueda por nombre y filtrado por categoría.
 
-📂 Estructura del Proyecto
-/frontend: Código fuente de Angular (componentes, servicios, vistas).
+Configuración: Uso de variables de entorno, CORS habilitados y manejo de errores de conexión.
 
-/backend: API REST construida Node.js.
+Interfaz (Front-end)
 
-/database: Consultas y configuración de Oracle.
+Buscador: Implementado con un campo de texto y peticiones mediante HttpClient.
 
-✨ Características
-✅ Interfaz dinámica con Angular.
+Catálogo: Visualización en tarjetas que incluyen imagen, nombre, categoría y un modal de "Ver más".
 
-✅ API.
+Navegación: Menú tipo hamburguesa obligatorio integrado en el header.
 
-✅ Consultas optimizadas en Oracle SQL.
+Diseño: Estructura semántica HTML5, estilos CSS por componente y total responsividad (móvil, tablet y escritorio).
 
-Desarrollado con ❤️ por: A. Raño
+🛠️ Organización de Angular
+
+El código sigue la estructura de carpetas requerida:
+
+/components: Componentes de la interfaz.
+
+/services: Lógica de comunicación con la API.
+
+/models: Definición de interfaces de datos.
+
+/pages: Vistas principales de la aplicación.
+
+Realizado con ❤️ por A. Raño.
+
+IES El Majuelo - Ciclo Superior DAM.
