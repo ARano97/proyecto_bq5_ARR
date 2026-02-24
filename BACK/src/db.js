@@ -4,7 +4,7 @@ oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
 async function getConnection() {
     try {
-        // CREDENCIALES HARCODEADAS PARA PRUEBA
+        // CREDENCIALES PARA PRUEBA
         const conn = await oracledb.getConnection({
             user: "PROYECTOBQ5ARANO",
             password: "system123",

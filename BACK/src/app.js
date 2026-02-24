@@ -23,7 +23,7 @@ app.get("/api/health", (req, res) => {
 // Rutas de la API
 app.use("/api/productos", productosRoutes);
 
-// Middleware para rutas no encontradas (404) - CORREGIDO
+// Middleware para rutas no encontradas (404)
 app.use((req, res) => {
     res.status(404).json({ 
         error: "Ruta no encontrada",
