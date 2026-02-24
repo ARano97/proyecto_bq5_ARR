@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ProductosService } from '../../services/producto.service';
 import { TarjetaProductoComponent } from '../../components/tarjeta-producto/tarjeta-producto';
 import { Producto } from '../../models/producto.model';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-inicio',
@@ -17,104 +18,74 @@ import { Producto } from '../../models/producto.model';
   templateUrl: './inicio.html',
   styleUrls: ['./inicio.css']
 })
-export class InicioComponent implements OnInit {
-  productos: Producto[] = [];
-  terminoBusqueda: string = '';
-  mensajeError: string = '';
-  cargando: boolean = false;
-  sinResultados: boolean = false;
+export class InicioComponent {
+  // Injectores modernos
+  private productosService = inject(ProductosService);
+  private route = inject(ActivatedRoute);
 
-  constructor(
-    private productosService: ProductosService,
-    private route: ActivatedRoute
-  ) {
-    console.log('🔧 InicioComponent constructor llamado');
-  }
+  // Signals de estado
+  terminoBusqueda = signal<string>('');
+  cargando = signal<boolean>(false);
+  mensajeError = signal<string>('');
+  productos = signal<Producto[]>([]);
+  
+  // Signal computada
+  sinResultados = computed(() => 
+    !this.cargando() && this.productos().length === 0 && !this.mensajeError()
+  );
 
-  ngOnInit(): void {
-    console.log('🔧 ngOnInit iniciado');
-    
-    this.route.params.subscribe(params => {
-      console.log('🔧 Parámetros de ruta:', params);
+  constructor() {
+    // Cargar productos al iniciar según la ruta
+    this.route.params.subscribe(async (params) => {
       const categoria = params['categoria'];
+      await this.cargarProductos(categoria);
+    });
+  }
+
+  private async cargarProductos(categoria?: string): Promise<void> {
+    this.cargando.set(true);
+    this.mensajeError.set('');
+    
+    try {
+      let data: Producto[];
+      
       if (categoria) {
-        console.log('🔧 Cargando por categoría:', categoria);
-        this.cargarPorCategoria(categoria);
+        // Convertir Observable a Promise con lastValueFrom
+        data = await lastValueFrom(this.productosService.getPorCategoria(categoria));
       } else {
-        console.log('🔧 Cargando todos los productos');
-        this.cargarTodos();
+        data = await lastValueFrom(this.productosService.getTodos());
       }
-    });
+      
+      this.productos.set(data);
+    } catch (err) {
+      console.error('Error:', err);
+      this.mensajeError.set('Error de conexión con el servidor');
+    } finally {
+      this.cargando.set(false);
+    }
   }
 
-  cargarTodos(): void {
-    console.log('🔧 cargarTodos() llamado');
-    this.cargando = true;
-    this.mensajeError = '';
+  async buscar(): Promise<void> {
+    const termino = this.terminoBusqueda().trim();
     
-    this.productosService.getTodos().subscribe({
-      next: (data) => {
-        console.log('✅ Datos recibidos correctamente:', data);
-        this.productos = data;
-        this.sinResultados = this.productos.length === 0;
-        this.cargando = false;
-      },
-      error: (err) => {
-        console.error('❌ Error en cargarTodos:', err);
-        console.error('❌ Mensaje de error:', err.message);
-        console.error('❌ Estado HTTP:', err.status);
-        console.error('❌ URL:', err.url);
-        
-        this.mensajeError = 'Error de conexión con el servidor. Asegúrate de que el backend esté corriendo en http://localhost:3000';
-        this.cargando = false;
-      }
-    });
-  }
-
-  cargarPorCategoria(categoria: string): void {
-    console.log('🔧 cargarPorCategoria() llamado con:', categoria);
-    this.cargando = true;
-    this.mensajeError = '';
-    
-    this.productosService.getPorCategoria(categoria).subscribe({
-      next: (data) => {
-        console.log('✅ Datos por categoría recibidos:', data);
-        this.productos = data;
-        this.sinResultados = this.productos.length === 0;
-        this.cargando = false;
-      },
-      error: (err) => {
-        console.error('❌ Error en cargarPorCategoria:', err);
-        this.mensajeError = 'Error al cargar la categoría';
-        this.cargando = false;
-      }
-    });
-  }
-
-  buscar(): void {
-    console.log('🔧 buscar() llamado con término:', this.terminoBusqueda);
-    
-    if (!this.terminoBusqueda.trim()) {
-      console.log('🔧 Término vacío, cargando todos');
-      this.cargarTodos();
+    if (!termino) {
+      // Si el término está vacío, recargar según la categoría actual
+      const params = await lastValueFrom(this.route.params);
+      await this.cargarProductos(params['categoria']);
       return;
     }
+
+    this.cargando.set(true);
+    this.mensajeError.set('');
     
-    this.cargando = true;
-    this.mensajeError = '';
-    
-    this.productosService.buscar(this.terminoBusqueda).subscribe({
-      next: (data) => {
-        console.log('✅ Resultados de búsqueda:', data);
-        this.productos = data;
-        this.sinResultados = this.productos.length === 0;
-        this.cargando = false;
-      },
-      error: (err) => {
-        console.error('❌ Error en búsqueda:', err);
-        this.mensajeError = 'Error en la búsqueda';
-        this.cargando = false;
-      }
-    });
+    try {
+      const data: Producto[] = await lastValueFrom(this.productosService.buscar(termino));
+      this.productos.set(data);
+    } catch (err) {
+      console.error('Error:', err);
+      this.mensajeError.set('Error en la búsqueda');
+    } finally {
+      this.cargando.set(false);
+    }
   }
 }

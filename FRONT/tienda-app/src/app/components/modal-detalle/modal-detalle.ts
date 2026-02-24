@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Producto } from '../../models/producto.model';
 
 @Component({
-  selector: 'app-modal-detalle',
+  selector: 'modal-detalle',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './modal-detalle.html',
